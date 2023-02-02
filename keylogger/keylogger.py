@@ -3,8 +3,8 @@
 from pynput.keyboard import Key, Listener
 
 
-class keylogs:
-    '''logger sclass'''
+class Keylogs:
+    '''logger class'''
 
     def __init__(self) -> None:
         self.count = 0
